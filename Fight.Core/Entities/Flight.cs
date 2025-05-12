@@ -22,7 +22,7 @@ namespace Fight.Core.Entities
 		public DateTime ArrivalTime { get; set; }
 
 		public int AirplaneId { get; set; }
-		public Airplane Airplane { get; set; }
+		//public Airplane Airplane { get; set; }
 
 		public decimal Price { get; set; }
 		public string Status { get; set; }

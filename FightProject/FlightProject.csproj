@@ -7,7 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.36">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fight.Core\Flight.Core.csproj" />
+    <ProjectReference Include="..\Fight.Repository\Flight.Repository.csproj" />
+    <ProjectReference Include="..\Fight.Services\Flight.Services.csproj" />
   </ItemGroup>
 
 </Project>

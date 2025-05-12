@@ -1,8 +1,14 @@
+using Flight.Core.Identity;
+using Flight.Repository.Identity;
+using FlightProject.Extentions;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 namespace FightProject
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +19,50 @@ namespace FightProject
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            var app = builder.Build();
+
+            builder.Services.AddDbContext<AppIdentityDbContext>(option =>
+            {
+                option.UseSqlServer(builder.Configuration.GetConnectionString("IdentityContext"));   
+            });
+
+            // I Make This Services To Contain All Services About Identity 
+            builder.Services.AddIdentityServices(builder.Configuration);
+
+            builder.Services.AddCors(Options=>
+            {
+                Options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyHeader()
+                           .AllowAnyOrigin()
+                           .AllowAnyMethod();
+                });
+            });
+
+
+			var app = builder.Build();
+
+            app.UseCors("AllowAll");
+
+            var scope = app.Services.CreateScope();
+            var Services = scope.ServiceProvider;
+            var LoggerFactory = Services.GetService<ILoggerFactory>();
+            try
+            {
+                var IdentityContext = Services.GetRequiredService<AppIdentityDbContext>();
+                await IdentityContext.Database.MigrateAsync();
+                var usermanger = Services.GetRequiredService<UserManager<AppUser>>();
+                await AppIdentityDbContextDataSeed.SeedUserAsync(usermanger);
+            }
+            catch (Exception ex)
+            {
+                var Logger = LoggerFactory.CreateLogger<Program>();
+                Logger.LogError(ex , ex.Message);
+                
+            }
+
+
+
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -23,7 +72,7 @@ namespace FightProject
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
