@@ -1,3 +1,6 @@
+using System;
+using Flight.Repository;
+using Microsoft.EntityFrameworkCore;
 namespace FightProject
 {
     public class Program
@@ -12,6 +15,8 @@ namespace FightProject
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
 

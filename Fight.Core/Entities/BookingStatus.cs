@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fight.Core.Entities
+namespace Flight.Core.Entities
 {
 	public enum BookingStatus
 	{

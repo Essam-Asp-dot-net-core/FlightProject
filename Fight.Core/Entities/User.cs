@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fight.Core.Entities
+namespace Flight.Core.Entities
 {
 	public class User : BaseEntity
 	{
@@ -13,9 +13,10 @@ namespace Fight.Core.Entities
 		public string PasswordHash { get; set; }
 		public string PhoneNumber { get; set; }
 		public string Role { get; set; } // Passenger, Admin
-		public DateTime CreatedAt { get; set; } 
+		public DateTime CreatedAt { get; set; }
+        public ICollection<Ticket> Tickets { get; set; }
 
-		public ICollection<Booking> Bookings { get; set; }
+        public ICollection<Booking> Bookings { get; set; }
 	}
 }
 

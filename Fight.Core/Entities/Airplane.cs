@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fight.Core.Entities
+namespace Flight.Core.Entities
 {
 	public class Airplane : BaseEntity
 	{

@@ -1,5 +1,4 @@
-﻿using Fight.Core.Entities;
-using Flight.Core.Entities;
+﻿using Flight.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fight.Core.Entities
+namespace Flight.Core.Entities
 {
 	public class Booking : BaseEntity
 	{

@@ -1,11 +1,11 @@
-﻿using Fight.Core.Entities;
+﻿using Flight.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fight.Core.Entities
+namespace Flight.Core.Entities
 {
 	public class Ticket : BaseEntity
 	{
@@ -19,7 +19,11 @@ namespace Fight.Core.Entities
 		public string SeatNumber { get; set; }
 		public string Class { get; set; }
 
-	}
+        public int UserId { get; set; }
+        public User User { get; set; }
+        public decimal Price { get; set; }
+
+    }
 }
 
 
