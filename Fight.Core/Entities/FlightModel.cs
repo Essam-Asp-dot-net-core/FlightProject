@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Fight.Core.Entities
 {
-	public class Flight : BaseEntity
+	public class FlightModel : BaseEntity
 	{
 		public string FlightNumber { get; set; }
 
@@ -17,17 +17,17 @@ namespace Fight.Core.Entities
 
 		public int ToAirportId { get; set; }
 		public AirPort ToAirport { get; set; }
-
 		public DateTime DepartureTime { get; set; }
 		public DateTime ArrivalTime { get; set; }
 
-		public int AirplaneId { get; set; }
+		//public int AirplaneId { get; set; }
 		//public Airplane Airplane { get; set; }
 
 		public decimal Price { get; set; }
 		public string Status { get; set; }
 
 		public ICollection<Ticket> Tickets { get; set; }
+		public Booking Bookings { get; set; }
 
 	}
 }

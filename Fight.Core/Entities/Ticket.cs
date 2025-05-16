@@ -1,4 +1,5 @@
 ﻿using Fight.Core.Entities;
+using Flight.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +14,21 @@ namespace Fight.Core.Entities
 		public Booking Booking { get; set; }
 
 		public int FlightId { get; set; }
-		public Flight Flight { get; set; }
+		public FlightModel Flight { get; set; }
 
 		public string PassengerName { get; set; }
 		public string SeatNumber { get; set; }
-		public string Class { get; set; }
+		public string Class { get; set; } //vip
+
+		public decimal Price { get; set; }
+		public int AvailableCount { get; set; }
+		public int DestinationId { get; set; }
+		public Destination Destination { get; set; }
+
+		public ICollection<BookingItem> BookingItems { get; set; } 
 
 	}
+
 }
 
 

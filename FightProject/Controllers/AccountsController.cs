@@ -31,6 +31,7 @@ namespace FlightProject.Controllers
 				Email = model.Email,
 				UserName = model.Email.Split('@')[0],
 				PhoneNumber = model.PhoneNumber,
+				Role = "User"
 			};
 
 			var Result = await _userManager.CreateAsync(user, model.Password);
@@ -43,6 +44,7 @@ namespace FlightProject.Controllers
 			{
 				Email = model.Email,
 				DisplayName = model.DisplayName,
+				Role = "User",
 				Token = await _tokenServices.CreateTokenAsync(user, _userManager)
 			};
 

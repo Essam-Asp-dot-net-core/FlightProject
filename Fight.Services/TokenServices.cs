@@ -29,6 +29,7 @@ namespace Flight.Services
 			{
 				new Claim(ClaimTypes.GivenName , User.DisplayName),
 				new Claim(ClaimTypes.Email, User.Email),
+				
 			};
 			var UserRole = await userManager.GetRolesAsync(User);
 			foreach (var role in UserRole)

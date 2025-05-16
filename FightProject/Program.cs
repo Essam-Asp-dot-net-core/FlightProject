@@ -1,8 +1,16 @@
 using Flight.Core.Identity;
+using Flight.Core.IRepository;
 using Flight.Repository.Identity;
+using Flight.Repository.MyFlightDbContext;
+using Flight.Repository.Repository;
+using FlightProject.Errors;
+using FlightProject.Extention;
 using FlightProject.Extentions;
+using FlightProject.Helper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NewProjectRoateAcademy.MiddelWare;
 
 namespace FightProject
 {
@@ -18,6 +26,15 @@ namespace FightProject
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            //Dependance InJection
+            builder.Services.AddApplicationServices();
+
+			//DbContext
+			builder.Services.AddDbContext<FlightDbContext>(Option=>
+            {
+                Option.UseSqlServer(builder.Configuration.GetConnectionString("FlightContext"));
+            });
 
 
             builder.Services.AddDbContext<AppIdentityDbContext>(option =>
@@ -43,11 +60,13 @@ namespace FightProject
 
             app.UseCors("AllowAll");
 
-            var scope = app.Services.CreateScope();
+           using var scope = app.Services.CreateScope();
             var Services = scope.ServiceProvider;
             var LoggerFactory = Services.GetService<ILoggerFactory>();
             try
             {
+                var context = Services.GetRequiredService<FlightDbContext>();
+                await context.Database.MigrateAsync();
                 var IdentityContext = Services.GetRequiredService<AppIdentityDbContext>();
                 await IdentityContext.Database.MigrateAsync();
                 var usermanger = Services.GetRequiredService<UserManager<AppUser>>();
@@ -62,10 +81,10 @@ namespace FightProject
 
 
 
-
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            //Error MiddleWare
+			app.UseMiddleware<ExceptionMiddleWare>();
+			// Configure the HTTP request pipeline.
+			if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();

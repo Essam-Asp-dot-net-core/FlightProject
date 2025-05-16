@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Fight.Core\Flight.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>
