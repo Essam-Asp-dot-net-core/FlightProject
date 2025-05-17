@@ -1,7 +1,7 @@
-﻿using Flight.Core.Entities;
+﻿using AutoMapper;
+using Flight.Core.Entities;
 using Flight.Repository;
 using FlightProject.DTOs;
-using FlightProject.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,10 +12,12 @@ namespace FlightProject.Controllers
     public class FlightsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public FlightsController(AppDbContext context)
+        public FlightsController(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -24,9 +26,11 @@ namespace FlightProject.Controllers
             var flights = await _context.Flights
                 .Include(f => f.DepartureAirPort)
                 .Include(f => f.ArrivalAirPort)
+                .Include(f => f.Airplane)
+                .Where(f => !f.IsDeleted)
                 .ToListAsync();
 
-            var result = flights.Select(FlightMapper.ToDto).ToList();
+            var result = _mapper.Map<List<FlightDto>>(flights);
             return Ok(result);
         }
 
@@ -43,17 +47,20 @@ namespace FlightProject.Controllers
             if (flight == null)
                 return NotFound();
 
-            return Ok(FlightMapper.ToDto(flight));
+            var dto = _mapper.Map<FlightDto>(flight);
+            return Ok(dto);
         }
 
         [HttpPost]
         public async Task<ActionResult<FlightDto>> AddFlight([FromBody] FlightDto dto)
         {
-            var flight = FlightMapper.ToEntity(dto);
+            var flight = _mapper.Map<Flight.Core.Entities.Flight>(dto);
+
             _context.Flights.Add(flight);
             await _context.SaveChangesAsync();
-            dto.Id = flight.Id;
-            return CreatedAtAction(nameof(GetFlightById), new { id = dto.Id }, dto);
+
+            var result = _mapper.Map<FlightDto>(flight);
+            return CreatedAtAction(nameof(GetFlightById), new { id = result.Id }, result);
         }
 
         [HttpPut("{id}")]
@@ -62,20 +69,13 @@ namespace FlightProject.Controllers
             if (id != dto.Id)
                 return BadRequest();
 
-            var existing = await _context.Flights.FindAsync(id);
-            if (existing == null)
+            var existingFlight = await _context.Flights.FindAsync(id);
+            if (existingFlight == null)
                 return NotFound();
 
-            existing.FlightNumber = dto.FlightNumber;
-            existing.DepartureAirPortId = dto.FromAirportId;
-            existing.ArrivalAirPortId = dto.ToAirportId;
-            existing.DepartureTime = dto.DepartureTime;
-            existing.ArrivalTime = dto.ArrivalTime;
-            existing.AirplaneId = dto.AirplaneId;
-            existing.Price = dto.Price;
-            existing.Status = dto.Status;
-
+            _mapper.Map(dto, existingFlight);
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
@@ -86,8 +86,9 @@ namespace FlightProject.Controllers
             if (flight == null)
                 return NotFound();
 
-            _context.Flights.Remove(flight);
+            flight.IsDeleted = true;
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
     }

@@ -18,6 +18,7 @@ namespace Flight.Core.Entities
 
 		public ICollection<Ticket> Tickets { get; set; }
 		public Payment Payment { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
-	}
+    }
 }

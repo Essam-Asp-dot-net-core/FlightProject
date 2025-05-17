@@ -15,5 +15,8 @@ namespace Flight.Core.Entities
 
         public ICollection<Flight> DepartingFlights { get; set; }
         public ICollection<Flight> ArrivingFlights { get; set; }
+        public bool IsDeleted { get; set; } = false;
+
+
     }
 }

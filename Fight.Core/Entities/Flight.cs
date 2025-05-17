@@ -28,6 +28,8 @@ namespace Flight.Core.Entities
         public string Status { get; set; }
 
         public ICollection<Ticket> Tickets { get; set; }
+        public bool IsDeleted { get; set; } = false;
+
     }
 }
 

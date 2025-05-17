@@ -14,6 +14,7 @@ namespace Flight.Core.Entities
 		public string RegistrationNumber { get; set; }
 
 		public ICollection<Flight> Flights { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
-	}
+    }
 }

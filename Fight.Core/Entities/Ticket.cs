@@ -22,6 +22,7 @@ namespace Flight.Core.Entities
         public int UserId { get; set; }
         public User User { get; set; }
         public decimal Price { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
     }
 }

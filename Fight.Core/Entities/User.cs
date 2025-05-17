@@ -17,7 +17,10 @@ namespace Flight.Core.Entities
         public ICollection<Ticket> Tickets { get; set; }
 
         public ICollection<Booking> Bookings { get; set; }
-	}
+        public bool IsDeleted { get; set; } = false;
+
+
+    }
 }
 
 

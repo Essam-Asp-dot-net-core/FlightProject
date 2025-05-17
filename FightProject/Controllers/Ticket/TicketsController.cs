@@ -1,5 +1,7 @@
-﻿using Flight.Repository;
+﻿using AutoMapper;
 using Flight.Core.Entities;
+using Flight.Repository;
+using FlightProject.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,56 +12,70 @@ namespace FlightProject.Controllers.Ticket
     public class TicketsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public TicketsController(AppDbContext context)
+        public TicketsController(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/tickets
         [HttpGet]
-        public async Task<IActionResult> GetTickets()
+        public async Task<ActionResult<IEnumerable<TicketDto>>> GetTickets()
         {
             var tickets = await _context.Tickets
                 .Include(t => t.Flight)
                 .Include(t => t.User)
+                .Where(t => !t.IsDeleted)
                 .ToListAsync();
-            return Ok(tickets);
+
+            var result = _mapper.Map<List<TicketDto>>(tickets);
+            return Ok(result);
         }
 
         // GET: api/tickets/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTicket(int id)
+        public async Task<ActionResult<TicketDto>> GetTicket(int id)
         {
             var ticket = await _context.Tickets
                 .Include(t => t.Flight)
                 .Include(t => t.User)
-                .FirstOrDefaultAsync(t => t.Id == id);
+                .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
 
             if (ticket == null)
                 return NotFound();
 
-            return Ok(ticket);
+            var result = _mapper.Map<TicketDto>(ticket);
+            return Ok(result);
         }
 
         // POST: api/tickets
         [HttpPost]
-        public async Task<IActionResult> CreateTicket([FromBody] Flight.Core.Entities.Ticket ticket)
+        public async Task<ActionResult<TicketDto>> CreateTicket([FromBody] TicketDto dto)
         {
-            _context.Tickets.Add(ticket);
+            var entity = _mapper.Map<Flight.Core.Entities.Ticket>(dto);
+            _context.Tickets.Add(entity);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetTicket), new { id = ticket.Id }, ticket);
+
+            dto.Id = entity.Id;
+            return CreatedAtAction(nameof(GetTicket), new { id = dto.Id }, dto);
         }
 
         // PUT: api/tickets/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTicket(int id, [FromBody] Flight.Core.Entities.Ticket ticket)
+        public async Task<IActionResult> UpdateTicket(int id, [FromBody] TicketDto dto)
         {
-            if (id != ticket.Id)
+            if (id != dto.Id)
                 return BadRequest();
 
-            _context.Entry(ticket).State = EntityState.Modified;
+            var ticket = await _context.Tickets.FindAsync(id);
+            if (ticket == null || ticket.IsDeleted)
+                return NotFound();
+
+            _mapper.Map(dto, ticket);
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
@@ -68,13 +84,13 @@ namespace FlightProject.Controllers.Ticket
         public async Task<IActionResult> DeleteTicket(int id)
         {
             var ticket = await _context.Tickets.FindAsync(id);
-            if (ticket == null)
+            if (ticket == null || ticket.IsDeleted)
                 return NotFound();
 
-            _context.Tickets.Remove(ticket);
+            ticket.IsDeleted = true;
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
     }
 }
-

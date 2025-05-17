@@ -8,16 +8,22 @@ namespace FlightProject.DTOs
 {
     public class FlightDto
     {
-        public int Id { get; set; }
         public string FlightNumber { get; set; }
-        public int FromAirportId { get; set; }
-        public string FromAirportName { get; set; }
-        public int ToAirportId { get; set; }
-        public string ToAirportName { get; set; }
+
+        public int DepartureAirPortId { get; set; }
+        public string DepartureAirPortName { get; set; }
+
+        public int ArrivalAirPortId { get; set; }
+        public string ArrivalAirPortName { get; set; }
+
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
+
         public int AirplaneId { get; set; }
+        public string AirplaneModel { get; set; }
+
         public decimal Price { get; set; }
         public string Status { get; set; }
+        public int Id { get; internal set; }
     }
 }

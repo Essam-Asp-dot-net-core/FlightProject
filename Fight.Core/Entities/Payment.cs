@@ -16,7 +16,8 @@ namespace Flight.Core.Entities
 		public DateTime PaidAt { get; set; }
 		public string PaymentMethod { get; set; }
 		public string Status { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
-	}
+    }
 }
 

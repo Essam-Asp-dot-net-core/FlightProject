@@ -1,5 +1,6 @@
 using System;
 using Flight.Repository;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 namespace FightProject
 {
@@ -17,6 +18,7 @@ namespace FightProject
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddAutoMapper(typeof(Program));
 
             var app = builder.Build();
 
